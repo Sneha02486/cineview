@@ -4,6 +4,7 @@
   base = "frontend"
   publish = "dist"
   command = "npm run build"
+  functions = "netlify/functions"
 
 # API routing to Netlify Function
 [[redirects]]

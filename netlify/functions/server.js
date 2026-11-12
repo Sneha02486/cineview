@@ -1,5 +1,5 @@
 import { createServer } from '@netlify/server';
-import app from '../../backend/src/server';
+import app from '../../backend/dist/server.js';
 
 export default createServer(app);
 

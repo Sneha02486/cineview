@@ -1,8 +1,6 @@
-import { createServer } from '@netlify/server';
+import serverless from 'serverless-http';
 import app from '../../backend/dist/server.js';
 
-export default createServer(app);
+export const handler = serverless(app);
 
-// Netlify function configuration for API routing
-export const config = { path: '/api/*' };
 

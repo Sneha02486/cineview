@@ -5,6 +5,13 @@
   publish = "dist"
   command = "npm run build"
 
+# API routing to Netlify Function
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/server"
+  status = 200
+  force = true
+
 # SPA history fallback for React Router navigation
 [[redirects]]
   from = "/*"

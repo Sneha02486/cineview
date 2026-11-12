@@ -1,0 +1,12 @@
+"$schema" = "https://open-api.netlify.com/netlify.schema.json"
+
+[build]
+  base = "frontend"
+  publish = "dist"
+  command = "npm run build"
+
+# SPA history fallback for React Router navigation
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

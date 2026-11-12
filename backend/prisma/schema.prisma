@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Movie {
+  id              String     @id @default(uuid())
+  title           String
+  slug            String     @unique
+  tagline         String?
+  description     String
+  posterUrl       String
+  backdropUrl     String
+  trailerUrl      String?
+  genre           String
+  durationMinutes Int
+  rating          Float
+  language        String
+  ageRating       String
+  releaseDate     String
+  director        String
+  cast            String
+  status          String     @default("NOW_SHOWING") // NOW_SHOWING, COMING_SOON
+  showtimes       Showtime[]
+  createdAt       DateTime   @default(now())
+}
+
+model Theater {
+  id        String   @id @default(uuid())
+  name      String
+  city      String
+  address   String
+  screens   Screen[]
+  createdAt DateTime @default(now())
+}
+
+model Screen {
+  id          String     @id @default(uuid())
+  theaterId   String
+  theater     Theater    @relation(fields: [theaterId], references: [id], onDelete: Cascade)
+  name        String
+  screenType  String     @default("Dolby Cinema")
+  totalRows   Int        @default(10)
+  seatsPerRow Int        @default(14)
+  seats       Seat[]
+  showtimes   Showtime[]
+  createdAt   DateTime   @default(now())
+}
+
+model Seat {
+  id             String        @id @default(uuid())
+  screenId       String
+  screen         Screen        @relation(fields: [screenId], references: [id], onDelete: Cascade)
+  row            String
+  number         Int
+  seatCode       String
+  type           String        @default("STANDARD") // STANDARD, VIP, RECLINER
+  priceMultiplier Float        @default(1.0)
+  posX           Float         // 3D coordinate X
+  posY           Float         // 3D coordinate Y (elevation)
+  posZ           Float         // 3D coordinate Z (distance from screen)
+  bookingSeats   BookingSeat[]
+  createdAt      DateTime      @default(now())
+
+  @@unique([screenId, row, number])
+}
+
+model Showtime {
+  id           String        @id @default(uuid())
+  movieId      String
+  movie        Movie         @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  screenId     String
+  screen       Screen        @relation(fields: [screenId], references: [id], onDelete: Cascade)
+  startTime    String
+  date         String
+  basePrice    Float         @default(14.0)
+  format       String        @default("2D Digital")
+  bookings     Booking[]
+  bookingSeats BookingSeat[]
+  createdAt    DateTime      @default(now())
+
+  @@unique([screenId, date, startTime])
+}
+
+model Booking {
+  id               String        @id @default(uuid())
+  bookingReference String        @unique
+  showtimeId       String
+  showtime         Showtime      @relation(fields: [showtimeId], references: [id], onDelete: Cascade)
+  customerName     String
+  customerEmail    String
+  customerPhone    String
+  subtotal         Float
+  convenienceFee   Float
+  totalAmount      Float
+  status           String        @default("CONFIRMED")
+  createdAt        DateTime      @default(now())
+  bookingSeats     BookingSeat[]
+}
+
+model BookingSeat {
+  id         String   @id @default(uuid())
+  bookingId  String
+  booking    Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  showtimeId String
+  showtime   Showtime @relation(fields: [showtimeId], references: [id], onDelete: Cascade)
+  seatId     String
+  seat       Seat     @relation(fields: [seatId], references: [id], onDelete: Cascade)
+  price      Float
+  createdAt  DateTime @default(now())
+
+  @@unique([showtimeId, seatId])
+}
+

@@ -39,9 +39,14 @@ app.use((req, res) => {
   res.status(404).json({ success: false, message: `Route ${req.method} ${req.url} not found` });
 });
 
-app.listen(PORT, () => {
-  console.log(`🎬 CineView API Server running on http://localhost:${PORT}`);
-});
+// In Netlify Functions the server is invoked as a handler, so we should not start a listening
+// server when this module is imported. The listen call is moved to a separate dev script.
+// If you run the backend locally (e.g., npm run dev), a separate script will start the server.
 
-export default app;
+
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`🎬 CineView API Server running on http://localhost:${PORT}`);
+  });
+}
 

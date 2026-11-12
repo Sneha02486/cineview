@@ -11,7 +11,8 @@
     "build:frontend": "npm --prefix frontend run build",
     "db:push": "npm --prefix backend run db:push",
     "db:seed": "npm --prefix backend run prisma:seed",
-    "test:e2e": "npx playwright test"
+    "test:e2e": "npx playwright test",
+    "build": "npm run build:frontend && npm run build:backend"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.0",

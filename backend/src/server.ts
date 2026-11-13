@@ -34,6 +34,14 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+app.get('/api/env-check', (req, res) => {
+  res.json({
+    hasDatabaseUrl: Boolean(process.env.DATABASE_URL),
+    startsWithPostgres: (process.env.DATABASE_URL || '').startsWith('postgresql://'),
+    databaseLikeKeys: Object.keys(process.env).filter((k) => k.toUpperCase().includes('DATABASE')),
+  });
+});
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({ success: false, message: `Route ${req.method} ${req.url} not found` });

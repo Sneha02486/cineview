@@ -2,26 +2,33 @@
 [build]
   command = "npm run build"
   publish = "frontend/dist"
-  functions = "netlify/functions"
 
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "24"
 
-[functions]
-  node_bundler = "esbuild"
-  external_node_modules = ["@prisma/client"]
-  included_files = [
-    "backend/dist/**",
-    "node_modules/.prisma/**",
-    "node_modules/@prisma/client/**"
-  ]
-
+# Client-side routes fall back to the SPA shell. /api/* is handled by the
+# Netlify Server (netlify/server/index.ts), so it must not be rewritten here.
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/server/api/:splat"
+  from = "/movie/*"
+  to = "/index.html"
   status = 200
 
 [[redirects]]
-  from = "/*"
+  from = "/seats/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/preview-3d/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/booking/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/confirmation/*"
   to = "/index.html"
   status = 200

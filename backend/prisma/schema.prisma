@@ -1,10 +1,11 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Movie {
@@ -52,19 +53,19 @@ model Screen {
 }
 
 model Seat {
-  id             String        @id @default(uuid())
-  screenId       String
-  screen         Screen        @relation(fields: [screenId], references: [id], onDelete: Cascade)
-  row            String
-  number         Int
-  seatCode       String
-  type           String        @default("STANDARD") // STANDARD, VIP, RECLINER
-  priceMultiplier Float        @default(1.0)
-  posX           Float         // 3D coordinate X
-  posY           Float         // 3D coordinate Y (elevation)
-  posZ           Float         // 3D coordinate Z (distance from screen)
-  bookingSeats   BookingSeat[]
-  createdAt      DateTime      @default(now())
+  id              String        @id @default(uuid())
+  screenId        String
+  screen          Screen        @relation(fields: [screenId], references: [id], onDelete: Cascade)
+  row             String
+  number          Int
+  seatCode        String
+  type            String        @default("STANDARD") // STANDARD, VIP, RECLINER
+  priceMultiplier Float         @default(1.0)
+  posX            Float         // 3D coordinate X
+  posY            Float         // 3D coordinate Y (elevation)
+  posZ            Float         // 3D coordinate Z (distance from screen)
+  bookingSeats    BookingSeat[]
+  createdAt       DateTime      @default(now())
 
   @@unique([screenId, row, number])
 }
@@ -115,4 +116,3 @@ model BookingSeat {
 
   @@unique([showtimeId, seatId])
 }
-

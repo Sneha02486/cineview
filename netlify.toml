@@ -1,21 +1,27 @@
-"$schema" = "https://open-api.netlify.com/netlify.schema.json"
 
 [build]
-  base = "frontend"
-  publish = "dist"
   command = "npm run build"
+  publish = "frontend/dist"
   functions = "netlify/functions"
 
-# API routing to Netlify Function
+[build.environment]
+  NODE_VERSION = "20"
+
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["@prisma/client"]
+  included_files = [
+    "backend/dist/**",
+    "node_modules/.prisma/**",
+    "node_modules/@prisma/client/**"
+  ]
+
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/server"
+  to = "/.netlify/functions/server/api/:splat"
   status = 200
-  force = true
 
-# SPA history fallback for React Router navigation
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-

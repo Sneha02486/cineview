@@ -1,10 +1,10 @@
 const serverless = require('serverless-http');
 
-// Works whether server.ts uses `export default app` or `module.exports = app`
 const mod = require('../../backend/dist/server.js');
-const app = mod.default || mod;
+const app = typeof mod === 'function' ? mod : mod.default || mod.app;
 
-// Strips the Netlify function prefix if it is present in the path
-module.exports.handler = serverless(app, {
-    basePath: '/.netlify/functions/server',
-});
+if (typeof app !== 'function') {
+    throw new Error('Express app not exported from backend/dist/server.js. Exports found: ' + Object.keys(mod).join(', '));
+}
+
+module.exports.handler = serverless(app, { basePath: '/.netlify/functions/server' });
